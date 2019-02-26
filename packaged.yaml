@@ -1,0 +1,47 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'questionnaire_ruby
+
+  Sample SAM Template for questionnaire_ruby
+
+  '
+Globals:
+  Function:
+    Timeout: 3
+Resources:
+  Bucket:
+    Type: AWS::S3::Bucket
+  QuestionnaireFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: s3://sam-bucket-fukushima/b75f4cea61e7456d4efc4566f945df42
+      Handler: app.lambda_handler
+      Runtime: ruby2.5
+      Role: arn:aws:iam::860018427478:role/sam-role
+      Policies:
+      - S3CrudPolicy:
+          BucketName:
+            Ref: Bucket
+      Events:
+        Questionnaire:
+          Type: Api
+          Properties:
+            Path: /questionnaire
+            Method: post
+Outputs:
+  QuestionnaireApi:
+    Description: API Gateway endpoint URL for Prod stage for Hello World function
+    Value:
+      Fn::Sub: https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/questionnaire/
+  QuestionnaireFunction:
+    Description: Questionnaire Lambda Function ARN
+    Value:
+      Fn::GetAtt:
+      - QuestionnaireFunction
+      - Arn
+  QuestionnaireFunctionIamRole:
+    Description: Implicit IAM Role created for Questionnaire function
+    Value:
+      Fn::GetAtt:
+      - QuestionnaireFunction
+      - Arn

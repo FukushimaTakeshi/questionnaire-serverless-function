@@ -1,9 +1,9 @@
 AWSTemplateFormatVersion: '2010-09-09'
 Transform: AWS::Serverless-2016-10-31
 Description: >
-    hello_ruby
+    questionnaire_ruby
 
-    Sample SAM Template for hello_ruby
+    Sample SAM Template for questionnaire_ruby
 
 # More info about Globals: https://github.com/awslabs/serverless-application-model/blob/master/docs/globals.rst
 Globals:
@@ -13,32 +13,38 @@ Globals:
 
 Resources:
 
-    HelloWorldFunction:
-        Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
-        Properties:
-            CodeUri: hello_world/
-            Handler: app.lambda_handler
-            Runtime: ruby2.5
-            Events:
-                HelloWorld:
-                    Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
-                    Properties:
-                        Path: /hello
-                        Method: get
+  Bucket:
+    Type: AWS::S3::Bucket
+  QuestionnaireFunction:
+    Type: AWS::Serverless::Function # More info about Function Resource: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#awsserverlessfunction
+    Properties:
+      CodeUri: questionnaire/
+      Handler: app.lambda_handler
+      Runtime: ruby2.5
+      Role: arn:aws:iam::860018427478:role/sam-role
+      Policies:
+        - S3CrudPolicy:
+            BucketName: !Ref Bucket
+      Events:
+        Questionnaire:
+          Type: Api # More info about API Event Source: https://github.com/awslabs/serverless-application-model/blob/master/versions/2016-10-31.md#api
+          Properties:
+            Path: /questionnaire
+            Method: post
 
 Outputs:
 
     # ServerlessRestApi is an implicit API created out of Events key under Serverless::Function
     # Find out more about other implicit resources you can reference within SAM
     # https://github.com/awslabs/serverless-application-model/blob/master/docs/internals/generated_resources.rst#api
-    HelloWorldApi:
+    QuestionnaireApi:
       Description: "API Gateway endpoint URL for Prod stage for Hello World function"
-      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/hello/"
+      Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/questionnaire/"
 
-    HelloWorldFunction:
-      Description: "Hello World Lambda Function ARN"
-      Value: !GetAtt HelloWorldFunction.Arn
+    QuestionnaireFunction:
+      Description: "Questionnaire Lambda Function ARN"
+      Value: !GetAtt QuestionnaireFunction.Arn
 
-    HelloWorldFunctionIamRole:
-      Description: "Implicit IAM Role created for Hello World function"
-      Value: !GetAtt HelloWorldFunctionRole.Arn
+    QuestionnaireFunctionIamRole:
+      Description: "Implicit IAM Role created for Questionnaire function"
+      Value: !GetAtt QuestionnaireFunction.Arn

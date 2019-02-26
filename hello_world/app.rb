@@ -1,5 +1,6 @@
 # require 'httparty'
 require 'json'
+require 'aws-sdk'
 
 def lambda_handler(event:, context:)
   # Sample pure Lambda function
@@ -28,10 +29,33 @@ def lambda_handler(event:, context:)
   #   raise error
   # end
 
+  p event
+  p '--------------'
+  p context
+
+  client = Aws::S3::Client.new(
+            region: 'ap-northeast-1'
+          )
+
+  hoge = {
+    hoge: 'fuga',
+    hogehoge: [
+      1,
+      2,
+      3,
+    ]
+  }
+
+  client.put_object(
+    bucket: 'questionnaire-on-study-group-fukushima',
+    key: 'sample.json',
+    body: hoge.to_json
+  )
+
   {
     statusCode: 200,
     body: {
-      message: Hellor Word,
+      message: hoge,
       # location: response.body
     }.to_json
   }
