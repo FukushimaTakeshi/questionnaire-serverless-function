@@ -37,7 +37,7 @@ def lambda_handler(event:, context:)
   {
     statusCode: 200,
     body: {
-      :message => 'OK',
+      message: 'OK'
     }.to_json
   }
 end
